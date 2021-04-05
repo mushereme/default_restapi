@@ -1,0 +1,31 @@
+{
+  "development": {
+    "username": "agm_user",
+    "password": "0YF$7y@03u^j",
+    "database": "agm_database",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false,
+    "logging": false,
+    "timezone": "+08:00"
+
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false
+  },
+  "production": {
+    "username": "agm_user",
+    "password": "00#Ltk5jJ^@C",
+    "database": "agm_database",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "operatorsAliases": false,
+    "logging": false,
+    "timezone": "+08:00"
+  }
+}
