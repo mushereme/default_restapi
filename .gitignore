@@ -1,0 +1,12 @@
+node_modules/
+public/images
+config/config.json
+./public
+public
+public/images
+.env
+log/access.log
+./log/access.log
+./pdf
+pdf
+log
