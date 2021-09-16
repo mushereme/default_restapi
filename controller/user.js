@@ -52,6 +52,11 @@ const getCookieOptions = () => {
 exports.createUser = asyncHandler(async (req, res, next) => {
 
     req.body.action = "create user";
+    req.body.action = "create user"
+    req.body.ip = await public_ip.v4()
+//    req.body.createdAt = now()
+//    req.body.updatedAt = now()
+
     const user = await req.db.user.create(req.body)
     
     user.password = ''
@@ -211,14 +216,15 @@ exports.login = asyncHandler(async (req, res, next) => {
 
     //Тухайн хэрэглэгчийг хайна
     const user = await req.db.user.scope('withPassword').findOne({ where: { email: email} })
-    console.log("USER IS HERE: ", user.dataValues.email);
+    // console.log("USER IS HERE: ", user.dataValues.email);
+
     if(!user) {
         throw new MyError('User not found', 400)
     }
 
     const ok = await user.checkPassword(password)
 
-    console.log("OK: ", ok);
+    // console.log("OK: ", ok);
 
     if(!ok) {
         throw new MyError("И-мэйл эсвэл нууц үг таарахгүй байна.", 401)
@@ -226,7 +232,12 @@ exports.login = asyncHandler(async (req, res, next) => {
 
     const token = user.getJsonWebToken()
 
-    console.log("TOKEN :", token);
+    // console.log("TOKEN :", token);
+   
+    const token = user.getJsonWebToken()
+
+    // user.ip = await public_ip.v4()
+    //    user.updatedAt = now()
 
     await user.save()
 
@@ -235,6 +246,13 @@ exports.login = asyncHandler(async (req, res, next) => {
     
     var cookieOptions = getCookieOptions()
     
+    // console.log("TOKEN IS HERE: ", token )
+    // console.log(process.env.COOKIE_ENV)
+    
+    var cookieOptions = getCookieOptions()
+    
+    // console.log("COOKIE IS HERE: ", cookieOptions )
+
     res.status(200).cookie('token', token, cookieOptions).json({
         success: true,
         user,
@@ -253,23 +271,32 @@ exports.register = asyncHandler(async (req, res, next) => {
 
     
     req.body.status = "9"
-
+    
     var user = await req.db.user.create(req.body)
-
-    try {
-        for(let i = 0; i < shareholders.length; i++) {
-            shareholders[i].userId = user.id
-            await shareholders[i].save()
-        }
-    } catch (e) {
-        throw new MyError(e, 400)
-    }
 
     const token = user.getJsonWebToken()
 
     user.ip = await public_ip.v4()
 
     await user.save()
+
+    // const confirmationToken = user.generateConfirmationToken()
+
+    // // console.log(confirmationToken)
+    user.ip = await public_ip.v4()
+    //    user.updatedAt = now()
+
+    await user.save()
+
+    // const confirmationLink = `${process.env.FRONTEND}/confirmation?token=${confirmationToken}`
+
+    // const message = `Сайн байна уу? <br><br>Та хувьцаа эзэмшигчдийн хуралд онлайнаар оролцох хүсэлт илгээлээ. <br> Дараах холбоосоор хандан бүртгэлээ баталгаажуулаарай: <br><br> <a href="${confirmationLink}">Баталгаажуулах</a><br><br>Хэрэв та хүсэлт илгээгээгүй бол яаралтай 75551919 дугаарт холбогдон мэдэгдэнэ үү.<br><br>Өдрийг сайхан өнгөрүүлээрэй.`
+
+    // await sendEmail({
+    //     email: user.email,
+    //     subject: 'Бүртгэл үүсгэх',
+    //     html: message
+    // })
 
     user.password = null
     user.confirmationToken = null
